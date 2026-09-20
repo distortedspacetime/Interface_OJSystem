@@ -1,55 +1,23 @@
-/*
 package evaluator
 
 import (
 	"bytes"
-	"fmt"
-	"os"
-	"path/filepath"
-	"strconv"
-
-	"judge_server/internal/model"
 )
 
-const problemDir string = "data/problems"
+type Checker struct{}
 
-type Evaluator struct {
+func NewChecker() *Checker {
+	return &Checker{}
 }
 
-func New() *Evaluator {
-	return &Evaluator{}
+func (c *Checker) CheckSame(expectedOutput string, actualOutput string) bool {
+
+	//추후 테스트케이스 입력단에서 정규화 후 해당 위치에서 정규화 제거 필요
+
+	return bytes.Equal(normalizeOutput(actualOutput), normalizeOutput(expectedOutput))
 }
 
-func (e *Evaluator) Evaluate(request model.EvaluateRequest) (model.EvaluateResult, error) {
-
-	outputPath := filepath.Join(problemDir, strconv.Itoa(request.ProblemID), "output", strconv.Itoa(request.TestCaseID))
-	expectedOutput, err := os.ReadFile(outputPath)
-
-	if err != nil {
-		return model.EvaluateResult{}, fmt.Errorf("채점중 오류가 발생했습니다. %w", err)
-	}
-
-	actualOutput := normalizeOutput(request.ActualOutput)
-	expectedOutput = normalizeOutput(string(expectedOutput))
-	result := model.EvaluateResult{
-		Result: bytes.Equal(actualOutput, expectedOutput),
-	}
-
-	return result, nil
-}
-
-/*
-\r\n        → \n으로 변경
-줄 끝 공백  → 제거
-줄 끝 탭    → 제거
-마지막 개행 → 제거
-
-줄 앞 공백  → 유지
-중간 공백   → 유지
-중간 개행   → 유지
-*/
-/*
-func normalizeOutput(output string) []byte {
+func normalizeOutput(output string) []byte { //util func
 	// string은 직접 수정할 수 없으므로 []byte로 변환한다.
 	// 이후 write 인덱스를 이용해 같은 배열 안에서 내용을 덮어쓰며 정규화한다.
 	data := []byte(output)
@@ -93,5 +61,3 @@ func normalizeOutput(output string) []byte {
 	// 실제 정규화된 영역까지만 반환한다.
 	return data[:write]
 }
-
-*/
