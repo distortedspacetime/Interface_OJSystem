@@ -1,115 +1,176 @@
 import { useState } from 'react'
-import { submitCode } from './api/submissions'
-import './App.css'
+import ProblemList from './components/ProblemList'
+import ProblemDetail from './components/ProblemDetail'
+import SubmissionSection from './components/SubmissionSection'
+import AdminProblemCreate from './components/AdminProblemCreate'
+import GroupSelect from './components/GroupSelect'
+import GroupProblemList from './components/GroupProblemList'
+import ProblemsetSection from './components/ProblemsetSection'
+import RecentSubmissions from './components/RecentSubmissions'
 
-// 1회차 고정 문제 정보
-const PROBLEM = {
-  id: 1,
-  title: 'A+B',
-  description: '두 정수를 입력받아 합을 출력하세요.',
-}
+export default function App() {
+  // 현재 보고 있는 메인 메뉴 ('groups' | 'all-problems' | 'admin')
+  const [currentTab, setCurrentTab] = useState('groups')
 
-const LANGUAGES = ['C', 'C++', 'Java', 'Python']
+  // 선택된 문제 ID
+  const [selectedProblemId, setSelectedProblemId] = useState(null)
 
-function App() {
-  const [language, setLanguage] = useState('C++')
-  const [source, setSource] = useState('')
-  const [result, setResult] = useState(null)
-  const [loading, setLoading] = useState(false)
+  // 선택된 그룹 ID
+  const [selectedGroupId, setSelectedGroupId] = useState(1)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setResult(null)
+  // 제출 완료 시 최근 제출 목록 갱신 트리거
+  const [submissionCount, setSubmissionCount] = useState(0)
 
-    try {
-      const responseData = await submitCode({
-        problemId: PROBLEM.id,
-        language,
-        source,
-      })
-      setResult(responseData)
-    } catch (error) {
-      setResult({ error: error.message })
-    } finally {
-      setLoading(false)
-    }
+  const handleSelectProblem = (id) => {
+    setSelectedProblemId(Number(id))
+  }
+
+  const handleBackToList = () => {
+    setSelectedProblemId(null)
+  }
+
+  const handleSubmissionDone = () => {
+    setSubmissionCount((prev) => prev + 1)
   }
 
   return (
     <div>
       <header>
-        <h1>Interface OJ</h1>
+        <h1>Interface OJ System</h1>
+        <p>온라인 저지 시스템</p>
       </header>
 
-      {/* 문제 정보 영역 */}
-      <section>
-        <h2>
-          문제 {PROBLEM.id}.
-        </h2>
-        <h3>
-          {PROBLEM.title}
-        </h3>
-        <p>{PROBLEM.description}</p>
-      </section>
-
-      {/* 제출 폼 영역 */}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="language">언어 선택 </label>
-          <select
-            id="language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            {LANGUAGES.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="source">소스 코드<br/></label>
-          <textarea
-            id="source"
-            rows="10"
-            placeholder="코드를 입력하세요"
-            value={source}
-            onChange={(e) => setSource(e.target.value)}
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? '제출 중...' : '제출'}
+      {/* 내비게이션 메뉴 */}
+      <nav>
+        <button
+          type="button"
+          onClick={() => {
+            setCurrentTab('groups')
+            setSelectedProblemId(null)
+          }}
+          disabled={currentTab === 'groups' && !selectedProblemId}
+        >
+          그룹 및 문제 목록
         </button>
-      </form>
+        {' '}
+        <button
+          type="button"
+          onClick={() => {
+            setCurrentTab('all-problems')
+            setSelectedProblemId(null)
+          }}
+          disabled={currentTab === 'all-problems' && !selectedProblemId}
+        >
+          전체 문제 목록
+        </button>
+        {' '}
+        <button
+          type="button"
+          onClick={() => {
+            setCurrentTab('admin')
+            setSelectedProblemId(null)
+          }}
+          disabled={currentTab === 'admin'}
+        >
+          문제 등록
+        </button>
+      </nav>
 
-      {/* 결과 표시 영역 */}
-      {result && (
-        <section>
-          <h2>제출 결과</h2>
+      <hr />
 
-          {result.error ? (
-            <p style={{ color: 'red' }}>
-              {result.error}
-            </p>
+      {/* ================= 그룹별 문제 및 문제집 ================= */}
+      {currentTab === 'groups' && (
+        <main>
+          <GroupSelect
+            selectedGroupId={selectedGroupId}
+            onSelectGroup={(gid) => {
+              setSelectedGroupId(gid)
+              setSelectedProblemId(null)
+            }}
+          />
+
+          <hr />
+
+          {!selectedProblemId ? (
+            <div>
+              <GroupProblemList
+                groupId={selectedGroupId}
+                onSelectProblem={handleSelectProblem}
+              />
+
+              <hr />
+
+              <ProblemsetSection
+                groupId={selectedGroupId}
+                onSelectProblem={handleSelectProblem}
+              />
+            </div>
           ) : (
             <div>
-              <p>
-                제출 ID (submissionId): {result.submissionId}
-              </p>
-              <p>
-                결과 (result):{' '}
-                <span>{result.result}</span>
-              </p>
+              <button type="button" onClick={handleBackToList}>
+                ← 그룹 문제 목록으로 돌아가기
+              </button>
+
+              <ProblemDetail
+                problemId={selectedProblemId}
+                onBack={handleBackToList}
+              />
+
+              <hr />
+
+              <SubmissionSection
+                problemId={selectedProblemId}
+                onSubmissionComplete={handleSubmissionDone}
+              />
+
+              <hr />
+
+              <RecentSubmissions
+                problemId={selectedProblemId}
+                refreshTrigger={submissionCount}
+              />
             </div>
           )}
-        </section>
+        </main>
       )}
+
+      {/* ================= 전체 문제 목록 ================= */}
+      {currentTab === 'all-problems' && (
+        <main>
+          {!selectedProblemId ? (
+            <ProblemList onSelectProblem={handleSelectProblem} />
+          ) : (
+            <div>
+              <ProblemDetail
+                problemId={selectedProblemId}
+                onBack={handleBackToList}
+              />
+              <hr />
+              <SubmissionSection
+                problemId={selectedProblemId}
+                onSubmissionComplete={handleSubmissionDone}
+              />
+            </div>
+          )}
+        </main>
+      )}
+
+      {/* ================= 문제 등록 ================= */}
+      {currentTab === 'admin' && (
+        <main>
+          <AdminProblemCreate
+            onProblemCreated={() => {
+              setCurrentTab('all-problems')
+            }}
+          />
+        </main>
+      )}
+
+      <hr />
+
+      <footer>
+        <p>Interface OJ System</p>
+      </footer>
     </div>
   )
 }
-
-export default App
