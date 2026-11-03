@@ -16,7 +16,7 @@ export default function App() {
   const [selectedProblemId, setSelectedProblemId] = useState(null)
 
   // 선택된 그룹 ID
-  const [selectedGroupId, setSelectedGroupId] = useState(1)
+  const [selectedGroupId, setSelectedGroupId] = useState(null)
 
   // 제출 완료 시 최근 제출 목록 갱신 트리거
   const [submissionCount, setSubmissionCount] = useState(0)

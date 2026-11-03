@@ -24,8 +24,7 @@ export default function ProblemsetSection({ groupId, onSelectProblem }) {
         const data = await getGroupProblemsets(groupId)
         if (!ignore) {
           setProblemsets(data)
-          if (data.length > 0) setSelectedSetId(data[0].setId)
-          else setSelectedSetId(null)
+          setSelectedSetId(null)
         }
       } catch (err) {
         if (!ignore) {
@@ -45,11 +44,11 @@ export default function ProblemsetSection({ groupId, onSelectProblem }) {
 
   // 선택된 문제집의 문제 목록 조회
   useEffect(() => {
+    if (!selectedSetId) {
+      return
+    }
     let ignore = false
     const fetchProblemsInSet = async () => {
-      if (!selectedSetId) {
-        return
-      }
       setLoadingProblems(true)
       setErrorProblems(null)
       try {
@@ -70,6 +69,7 @@ export default function ProblemsetSection({ groupId, onSelectProblem }) {
     }
   }, [selectedSetId])
 
+  const selectedSet = problemsets.find((s) => s.setId === selectedSetId)
   const displayedProblems = selectedSetId ? setProblems : []
 
   return (
@@ -84,33 +84,59 @@ export default function ProblemsetSection({ groupId, onSelectProblem }) {
         <p>해당 그룹에 등록된 문제집이 없습니다.</p>
       )}
 
+      {/* 문제집 목록 테이블 */}
       {!loadingSets && problemsets.length > 0 && (
-        <div>
-          <label htmlFor="problemset-select">문제집 선택: </label>
-          <select
-            id="problemset-select"
-            value={selectedSetId || ''}
-            onChange={(e) => setSelectedSetId(Number(e.target.value))}
-          >
-            {problemsets.map((s) => (
-              <option key={s.setId} value={s.setId}>
-                [{s.status || '진행'}] {s.name} {s.startDate ? `(${s.startDate} ~ ${s.endDate})` : ''}
-              </option>
-            ))}
-          </select>
-        </div>
+        <table border="1" cellPadding="5">
+          <thead>
+            <tr>
+              <th>문제집 번호</th>
+              <th>문제집 이름</th>
+              <th>진행 상태</th>
+              <th>진행 기간</th>
+              <th>수록 문제 보기</th>
+            </tr>
+          </thead>
+          <tbody>
+            {problemsets.map((s) => {
+              const isSelected = selectedSetId === s.setId
+              return (
+                <tr key={s.setId}>
+                  <td>{s.setId}</td>
+                  <td>{s.name}</td>
+                  <td>{s.status || '-'}</td>
+                  <td>
+                    {s.startDate && s.endDate
+                      ? `${s.startDate} ~ ${s.endDate}`
+                      : '-'}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSelectedSetId(isSelected ? null : s.setId)
+                      }
+                    >
+                      {isSelected ? '닫기' : '문제 목록 보기'}
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       )}
 
-      {selectedSetId && (
+      {/* 선택한 문제집 수록 문제 목록 */}
+      {selectedSet && (
         <div>
-          <h4>문제집 수록 문제</h4>
+          <h4>[{selectedSet.name}] 수록 문제 목록</h4>
 
-          {loadingProblems && <p>문제집의 문제를 불러오는 중...</p>}
+          {loadingProblems && <p>문제 목록을 불러오는 중...</p>}
 
           {errorProblems && <p>문제 목록 조회 오류: {errorProblems}</p>}
 
           {!loadingProblems && !errorProblems && displayedProblems.length === 0 && (
-            <p>이 문제집에 연결된 문제가 없습니다.</p>
+            <p>이 문제집에 수록된 문제가 없습니다.</p>
           )}
 
           {!loadingProblems && !errorProblems && displayedProblems.length > 0 && (
@@ -121,7 +147,7 @@ export default function ProblemsetSection({ groupId, onSelectProblem }) {
                   <th>문제 제목</th>
                   <th>시간 제한</th>
                   <th>메모리 제한</th>
-                  <th>이동</th>
+                  <th>문제 풀기</th>
                 </tr>
               </thead>
               <tbody>

@@ -10,7 +10,7 @@ export default function AdminProblemCreate({ onProblemCreated }) {
     timeLimit: 1000,
     memoryLimit: 128,
     outputLimit: 512,
-    groupId: 1,
+    groupId: '',
   })
 
   const [submitting, setSubmitting] = useState(false)
@@ -22,7 +22,7 @@ export default function AdminProblemCreate({ onProblemCreated }) {
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'timeLimit' || name === 'memoryLimit' || name === 'outputLimit' || name === 'groupId'
-        ? Number(value)
+        ? (value === '' ? '' : Number(value))
         : value,
     }))
   }
