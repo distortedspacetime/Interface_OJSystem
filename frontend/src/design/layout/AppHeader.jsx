@@ -8,7 +8,7 @@ export default function AppHeader({ user, screen, group, onNavigate, onChangeUse
     </button>
     {user && <>
       <nav className="nav" aria-label="주 메뉴">
-        {[['groups', '그룹 선택'], ['list', '문제 목록'], ['sets', '문제집 목록']].map(([key, label]) => <button type="button" key={key} className={`nav-item ${active === key ? 'active' : ''}`} aria-current={active === key ? 'page' : undefined} disabled={key !== 'groups' && !group} onClick={() => onNavigate(key)}>{label}</button>)}
+        {[['groups', '그룹 선택'], ['list', '문제 목록'], ['sets', '문제집 목록'], ['submissions', '내 제출']].map(([key, label]) => <button type="button" key={key} className={`nav-item ${active === key ? 'active' : ''}`} aria-current={active === key ? 'page' : undefined} disabled={['list', 'sets'].includes(key) && !group} onClick={() => onNavigate(key)}>{label}</button>)}
       </nav>
       <div className="account"><span className="account-name">{user.username} 님</span><button type="button" className="account-button" onClick={onChangeUser}>사용자 변경</button></div>
     </>}

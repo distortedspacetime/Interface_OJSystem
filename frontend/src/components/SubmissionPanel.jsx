@@ -18,7 +18,7 @@ const VERDICTS = {
 }
 const liveSubmission = { submitCode, subscribeToSubmission }
 
-function SubmissionPanel({ problemId, userId, problem, transport = liveSubmission, onBackToList, onBackToDetail }) {
+function SubmissionPanel({ problemId, userId, problem, transport = liveSubmission, onBackToList, onBackToDetail, onSubmissionChange, onShowSubmissions }) {
   const [language, setLanguage] = useState('C++')
   const [source, setSource] = useState('')
   const [result, setResult] = useState(null)
@@ -34,6 +34,15 @@ function SubmissionPanel({ problemId, userId, problem, transport = liveSubmissio
       resultStream.current?.close()
     }
   }, [])
+
+  useEffect(() => {
+    if (!result?.submissionId || !result.result) return
+    onSubmissionChange?.({
+      userId, submissionId: result.submissionId, problemId,
+      title: problem?.title ?? `문제 ${problemId}`, language,
+      result: result.result, submittedAt: new Date().toISOString(),
+    })
+  }, [result, userId, problemId, problem?.title, language, onSubmissionChange])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -161,6 +170,7 @@ function SubmissionPanel({ problemId, userId, problem, transport = liveSubmissio
             </div>
             <div className="result-actions">
               <Button onClick={editSource}>{pending ? '코드 수정' : '코드 수정 및 재제출'}</Button>
+              {onShowSubmissions && <Button variant="secondary" onClick={onShowSubmissions}>내 제출 목록</Button>}
               {onBackToDetail && <Button variant="secondary" onClick={onBackToDetail}>문제 상세</Button>}
               {onBackToList && <Button variant="secondary" onClick={onBackToList}>문제 목록</Button>}
             </div>

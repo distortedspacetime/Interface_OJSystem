@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getProblem } from '../api/getProblem'
 import { AsyncState, Button, CopyButton, StatusBadge } from '../design/ui'
 
-function ProblemDetail({ problemId, userId, isSolved = false, onSubmit, onBack }) {
+function ProblemDetail({ problemId, userId, isSolved = false, onSubmit, onBack, backLabel = '문제 목록' }) {
   const [result, setResult] = useState(null)
   const [attempt, setAttempt] = useState(0)
 
@@ -37,7 +37,7 @@ function ProblemDetail({ problemId, userId, isSolved = false, onSubmit, onBack }
           {problem && <StatusBadge solved={isSolved} />}
         </div>
         <div className="actions">
-          <Button variant="secondary" onClick={onBack}>문제 목록</Button>
+          <Button variant="secondary" onClick={onBack}>{backLabel}</Button>
           {problem && <Button onClick={() => onSubmit(problem)}>코드 제출</Button>}
         </div>
       </div>
@@ -89,7 +89,7 @@ function ProblemDetail({ problemId, userId, isSolved = false, onSubmit, onBack }
             </section>
           </div>
           <div className="actions detail-actions">
-            <Button variant="secondary" onClick={onBack}>문제 목록으로 돌아가기</Button>
+            <Button variant="secondary" onClick={onBack}>{backLabel}으로 돌아가기</Button>
             <Button onClick={() => onSubmit(problem)}>코드 제출</Button>
           </div>
         </>

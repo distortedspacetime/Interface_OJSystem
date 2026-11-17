@@ -1,0 +1,78 @@
+.submission-history { min-width: 0; }
+.history-filters { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(135px, 170px) minmax(110px, 140px) auto; align-items: end; gap: 14px; margin-bottom: 18px; padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-panel); }
+.history-search, .history-filter { display: grid; min-width: 0; gap: 9px; }
+.history-filters label { color: #425370; font-size: 13px; font-weight: 730; }
+.history-filters input, .history-filters select { width: 100%; min-width: 0; height: 43px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: white; color: var(--text); font-size: 14px; }
+.history-filters input::placeholder { color: #7a879b; }
+.history-filter-actions { display: flex; align-items: center; gap: 8px; }
+.history-filter-actions .btn { min-height: 43px; }
+.history-notice { margin: 0 0 18px; padding: 12px 16px; border: 1px solid #d8e3f5; border-radius: 9px; background: var(--navy-soft); color: #52637c; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.history-loading-note { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.submission-history .panel-head { flex-wrap: wrap; }
+.history-table-wrap { width: 100%; min-width: 0; }
+.submission-history .history-table { table-layout: fixed; }
+.submission-history .history-table th, .submission-history .history-table td { padding: 18px 20px; text-align: left; }
+.submission-history .history-table th { font-size: 12px; }
+.submission-history .history-table td { font-size: 14px; line-height: 1.6; vertical-align: middle; }
+.submission-history .history-table th:first-child, .submission-history .history-table td:first-child { width: 110px; }
+.submission-history .history-table th:nth-child(3), .submission-history .history-table td:nth-child(3) { width: 150px; }
+.submission-history .history-table th:nth-child(4), .submission-history .history-table td:nth-child(4) { width: 90px; }
+.submission-history .history-table th:last-child, .submission-history .history-table td:last-child { width: 190px; text-align: left; }
+.history-id { color: #61718a; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.history-problem-number { margin-right: 7px; color: #69778e; font-variant-numeric: tabular-nums; }
+.history-problem-title { display: inline; color: var(--navy); font-size: 14px; font-weight: 740; line-height: 1.7; overflow-wrap: anywhere; }
+.history-language { color: #4b5a71; font-size: 13px; }
+.history-time { color: var(--muted); font-variant-numeric: tabular-nums; }
+.history-time time { font-size: 12px; overflow-wrap: anywhere; }
+.history-pagination { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 19px 24px; border-top: 1px solid var(--border); background: #fcfdff; }
+.history-pagination .btn { min-width: 90px; padding: 9px 14px; font-size: 13px; }
+.history-page-info { color: #52637c; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.6; }
+.history-page-info > span { color: var(--muted); }
+.history-empty { min-height: 220px; flex-direction: column; gap: 16px; }
+.history-empty p { margin: 0; }
+@media (min-width: 981px) and (max-width: 1100px) {
+  .topbar .topbar-inner { flex-wrap: wrap; gap: 0; }
+  .topbar .brand { padding: 12px 0; }
+  .topbar .nav { order: 3; width: 100%; height: 47px; margin: 0; border-top: 1px solid #edf0f5; }
+  .topbar .account { margin-left: auto; }
+}
+@media (max-width: 900px) {
+  .history-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .history-search { grid-column: 1 / -1; }
+  .history-filter-actions { grid-column: 1 / -1; justify-content: flex-end; }
+  .submission-history .history-table th, .submission-history .history-table td { padding: 16px 12px; }
+  .submission-history .history-table th:first-child, .submission-history .history-table td:first-child { width: 88px; }
+  .submission-history .history-table th:nth-child(3), .submission-history .history-table td:nth-child(3) { width: 130px; }
+  .submission-history .history-table th:nth-child(4), .submission-history .history-table td:nth-child(4) { width: 72px; }
+  .submission-history .history-table th:last-child, .submission-history .history-table td:last-child { width: 155px; }
+}
+@media (max-width: 700px) {
+  .history-filters { gap: 15px 12px; padding: 18px 16px; }
+  .history-filter-actions .btn { flex: 1; }
+  .submission-history .history-table, .submission-history .history-table tbody { display: block; width: 100%; }
+  .submission-history .history-table thead { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .submission-history .history-table tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 15px 16px; padding: 20px 16px; border-top: 1px solid var(--border); }
+  .submission-history .history-table tbody tr:first-child { border-top: 0; }
+  .submission-history .history-table tbody td { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: auto; min-width: 0; padding: 0; border: 0; font-size: 13px; text-align: left; }
+  .submission-history .history-table td::before { content: attr(data-label); color: var(--muted); font-family: var(--font-sans); font-size: 11px; font-weight: 650; line-height: 1.4; }
+  .submission-history .history-table .history-id { order: 1; }
+  .submission-history .history-table .history-result { order: 2; align-items: flex-end; }
+  .submission-history .history-table .history-problem { order: 3; grid-column: 1 / -1; display: block; }
+  .submission-history .history-table .history-problem::before { display: block; margin-bottom: 6px; }
+  .submission-history .history-table .history-language { order: 4; }
+  .submission-history .history-table .history-time { order: 5; }
+  .history-problem-title { font-size: 15px; }
+  .history-pagination { gap: 8px; padding: 16px; }
+  .history-pagination .btn { min-width: 74px; padding: 9px 10px; font-size: 12px; }
+  .history-page-info { font-size: 12px; }
+  .history-page-info > span { display: block; font-size: 11px; }
+  .history-notice { padding: 11px 13px; font-size: 12px; }
+}
+@media (max-width: 600px) {
+  .topbar .nav { min-width: 0; }
+  .topbar .nav-item { flex: 1; min-width: 0; padding-right: 5px; padding-left: 5px; }
+}
+
+@media (max-width: 700px) {
+  .submission-history .history-table tbody td:nth-child(n) { width: auto; text-align: left; }
+}
